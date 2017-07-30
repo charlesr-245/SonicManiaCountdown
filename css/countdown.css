@@ -1,0 +1,81 @@
+﻿
+@font-face {
+    font-family: sonic;
+    src: url('../assets/sonic.ttf');
+}
+
+body {
+    background: #f3c900;
+    height: 100%;
+    font-family: 'sonic';
+    background-image: url(../assets/bg.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: left top;
+    background-attachment: fixed;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+div {
+    margin-top:19vw;
+    margin-left:20vw;
+}
+
+div p {
+    font-size: 5vw;
+}
+
+#countdown {
+    width:56vw;
+    height:3.5vw;
+}
+
+#mainTimer {
+    position: relative;
+    z-index: 1;
+    top: 7.8vw;
+    left: 3.2vw;
+    color: white;
+    font-family: 'sonic';
+    text-shadow: -0.15vw -0.15vw 0 #000, 0.15vw -0.15vw 0 #000, -0.15vw 0.15vw 0 #000, 0.15vw 0.15vw 0 #000;
+}
+
+#secondaryTimer {
+    position: relative;
+    z-index: 1;
+    bottom: 8.75vw;
+    left: 15vw;
+    font-family: 'sonic';
+    text-shadow: -0.12vw -0.12vw 0 #fff, 0.12vw -0.12vw 0 #fff, -0.12vw 0.12vw 0 #fff, 0.12vw 0.12vw 0 #fff;
+}
+
+#secondsTimer {
+    font-size: 3.8vw;
+}
+
+#seconds {
+    z-index:0;
+    margin-top:2vw;
+    margin-left:12vw;
+    width:28vw;
+}
+
+footer {
+    position:relative;
+    bottom:50vw;
+}
+footer p {
+    display:inline-block;
+    padding-left:0.15vw;
+}
+footer input {
+    width:1vw;
+    height:1vw;
+}
+.nextLine {
+    padding-left:2vw;
+    position:relative;
+    display:block;
+    bottom:2vw;
+}
