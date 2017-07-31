@@ -1,5 +1,5 @@
 ﻿var endDate = new Date(Date.UTC(2017, 07, 15, 0, 0, 0, 0));
-//var endDate = new Date(2017, 06, 30, 19, 06, 55, 0);
+//var endDate = new Date(2017, 06, 31, 15, 57, 45, 0);
 var _mili = 1;
 var _second = _mili*1000;
 var _minute = _second * 60;
@@ -109,17 +109,10 @@ function Setup() {
 function CalculateTime() {
     currentTime = new Date();
     var timeLeft = endDate - currentTime;
-
     if (timeLeft < 0) {
         timer.innerHTML = "Hey! What are you doing here?";
         secondsTimer.innerHTML = "Sonic Mania is out NOW!!!";
-        if (_endingSounds) {
-            ending.src="https://www.youtube.com/embed/OLcblxrrE0Q?autoplay=1";
-        } else if (_endingSounds2) {
-            //To be added
-            ending.src="";
-        }
-        
+
         return;
     }
 
@@ -129,8 +122,8 @@ function CalculateTime() {
      seconds = Math.floor((timeLeft % _minute) / _second);
      milis = Math.floor((timeLeft % _second) / _mili);
 
-     if (days == 0 && hours == 0 && minutes <= 1 && seconds <= 50 && !played && (_endingSounds || _endingSounds2)) {
-         RemoveMusic(true);
+     if (days == 0 && hours == 0 && minutes <= 1 && seconds <= 31 && !played && (_endingSounds || _endingSounds2)) {
+         RemoveMusic();
          PlayEnd();
          played = true;
      }
@@ -181,10 +174,11 @@ function MiliCount() {
 }
 
 function PlayEnd() {
-    if (endingSounds) {
+    if (_endingSounds) {
         ending.src = "https://www.youtube.com/embed/wvD8NZN9Zsg?autoplay=1";
-    } else if (endingSounds2) {
-        ending.src = "https://www.youtube.com/embed/wvD8NZN9Zsg?autoplay=1";
+    } else if (_endingSounds2) {
+        //ending.src = "https://www.youtube.com/embed/wvD8NZN9Zsg?autoplay=1";
+        //TO BE ADDED
     }
     ending.frameBorder = "0";
     ending.id = "ending";
@@ -192,42 +186,44 @@ function PlayEnd() {
     ending = document.getElementById("ending");
 }
 
-  function PlayMusic() {
-    body.item(0).appendChild(musicPlayer);
-    var randomIndex = Math.floor(Math.random()*16);
-    console.clear();
-    console.log(randomIndex);
-    var playlist;
-    if (document.getElementById("musicPlayerChoice").checked) {
-        playlist = "PL6YtbPaCgKrSPGQcud92UaT2daUfYq1L_";
-    } else {
-        playlist = 'PL9kRoOntv7eDUBf_Fxu4JrHsozuBBP4wD';
+function PlayMusic() {
+    if (days == 0 && hours == 0 && minutes <= 1 && seconds <= 31 && played && (_endingSounds || _endingSounds2)) {
+        return;
+    } 
+    else {
+        body.item(0).appendChild(musicPlayer);
+        var randomIndex = Math.floor(Math.random()*16);
+        console.clear();
+        console.log(randomIndex);
+        var playlist;
+        if (document.getElementById("musicPlayerChoice").checked) {
+            playlist = "PL6YtbPaCgKrSPGQcud92UaT2daUfYq1L_";
+        } else {
+            playlist = 'PL9kRoOntv7eDUBf_Fxu4JrHsozuBBP4wD';
+        }
+        player = new YT.Player('musicPlayer', {
+            height: '0',
+            width: '0',
+            playerVars:
+            {
+                loop: "1",
+                autoplay: "1",
+                listType: 'playlist',
+                list: playlist,
+                disablekb: "1",
+                origin: "mania.charlez245.com",
+                index: randomIndex,
+                start: 1500,
+            },
+            events: {
+                "onReady": onReady,
+            }
+        });
     }
-    player = new YT.Player('musicPlayer', {
-      height: '0',
-      width: '0',
-      playerVars:
-      {
-        loop: "1",
-        autoplay: "1",
-        listType: 'playlist',
-        list: playlist,
-        disablekb: "1",
-        origin: "mania.charlez245.com",
-        index: randomIndex,
-        start: 1500,
-      },
-    events: {
-        "onReady": onReady,
-    }
-    });
-  }
+}
 
 
-function RemoveMusic(full) {
-    if (full) {
-        body.item(0).removeChild(document.getElementById("musicPlayerChoice"));
-    }
+function RemoveMusic() {
     if (document.getElementById("musicPlayer")) {
         body.item(0).removeChild(document.getElementById("musicPlayer"));
     }
