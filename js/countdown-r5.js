@@ -23,6 +23,25 @@ var body = document.getElementsByClassName("body");
 var _endingSounds = false;
 var _endingSounds2 = false;
 var _alert = false;
+var musicPlayerChoice = document.getElementById("musicPlayerChoice").addEventListener("change",function() {
+    RemoveMusic(false);
+    if (document.getElementById("musicPlayerChoice").checked) {
+        document.getElementById("musicPlayerChoice2").checked = false;
+        PlayMusic();
+    }
+});
+
+var musicPlayerChoice2 = document.getElementById("musicPlayerChoice2").addEventListener("change",function() {
+    RemoveMusic(false);
+    if (document.getElementById("musicPlayerChoice2").checked) {
+        document.getElementById("musicPlayerChoice").checked = false;
+        PlayMusic();
+    }
+});
+
+
+var musicPlayer = document.createElement("div");
+musicPlayer.id="musicPlayer";
 
 var endingSounds = document.getElementById("endingSounds").addEventListener("change", function() {
     if (document.getElementById("endingSounds").checked) {
@@ -59,14 +78,31 @@ var endingSounds = document.getElementById("endingSounds2").addEventListener("ch
 
 });
 
+//YOUTUBE API IMPLEMENTATION
+  // Load the IFrame Player API code asynchronously.
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/player_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  // Replace the 'ytplayer' element with an <iframe> and
+  // YouTube player after the API code downloads.
+  var player;
+
+  function onReady(event) {
+      setTimeout(function() {
+          event.target.setShuffle(true);
+      },150);
+  }
+
+
 Setup();
 function Setup() {
     timer = document.getElementById("timer");
     secondsTimer = document.getElementById("secondsTimer");
     console.log(new Date().getUTCDate());
-     console.log(new Date().getTimezoneOffset());
+    console.log(new Date().getTimezoneOffset());
     console.log(endDate);
-    //PlayEnd();
     CalculateTime();
 }
 
@@ -75,10 +111,15 @@ function CalculateTime() {
     var timeLeft = endDate - currentTime;
 
     if (timeLeft < 0) {
-        clearInterval(timer);
         timer.innerHTML = "Hey! What are you doing here?";
         secondsTimer.innerHTML = "Sonic Mania is out NOW!!!";
-        ending.src="https://www.youtube.com/embed/OLcblxrrE0Q?autoplay=1";
+        if (_endingSounds) {
+            ending.src="https://www.youtube.com/embed/OLcblxrrE0Q?autoplay=1";
+        } else if (_endingSounds2) {
+            //To be added
+            ending.src="";
+        }
+        
         return;
     }
 
@@ -88,7 +129,8 @@ function CalculateTime() {
      seconds = Math.floor((timeLeft % _minute) / _second);
      milis = Math.floor((timeLeft % _second) / _mili);
 
-     if (days == 0 && hours == 0 && minutes <= 1 && seconds <= 35 && !played && (_endingSounds || _endingSounds2)) {
+     if (days == 0 && hours == 0 && minutes <= 1 && seconds <= 50 && !played && (_endingSounds || _endingSounds2)) {
+         RemoveMusic(true);
          PlayEnd();
          played = true;
      }
@@ -148,4 +190,45 @@ function PlayEnd() {
     ending.id = "ending";
     body.item(0).appendChild(ending);
     ending = document.getElementById("ending");
+}
+
+  function PlayMusic() {
+    body.item(0).appendChild(musicPlayer);
+    var randomIndex = Math.floor(Math.random()*16);
+    console.clear();
+    console.log(randomIndex);
+    var playlist;
+    if (document.getElementById("musicPlayerChoice").checked) {
+        playlist = "PL6YtbPaCgKrSPGQcud92UaT2daUfYq1L_";
+    } else {
+        playlist = 'PL9kRoOntv7eDUBf_Fxu4JrHsozuBBP4wD';
+    }
+    player = new YT.Player('musicPlayer', {
+      height: '0',
+      width: '0',
+      playerVars:
+      {
+        loop: "1",
+        autoplay: "1",
+        listType: 'playlist',
+        list: playlist,
+        disablekb: "1",
+        origin: "mania.charlez245.com",
+        index: randomIndex,
+        start: 1500,
+      },
+    events: {
+        "onReady": onReady,
+    }
+    });
+  }
+
+
+function RemoveMusic(full) {
+    if (full) {
+        body.item(0).removeChild(document.getElementById("musicPlayerChoice"));
+    }
+    if (document.getElementById("musicPlayer")) {
+        body.item(0).removeChild(document.getElementById("musicPlayer"));
+    }
 }
