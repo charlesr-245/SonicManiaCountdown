@@ -1,4 +1,5 @@
 ﻿var endDate = new Date(Date.UTC(2017, 07, 15, 0, 0, 0, 0));
+
 var _mili = 1;
 var _second = _mili*1000;
 var _minute = _second * 60;
@@ -22,6 +23,10 @@ var body = document.getElementsByClassName("body");
 var _endingSounds = false;
 var _endingSounds2 = false;
 var _alert = false;
+
+//var endDate = new Date().getTime() + 100000;
+
+
 var musicPlayerChoice = document.getElementById("musicPlayerChoice").addEventListener("change",function() {
     if (document.getElementById("musicPlayerChoice").checked) {
         document.getElementById("musicPlayerChoice2").checked = false;
@@ -78,7 +83,7 @@ var endingSounds2 = document.getElementById("endingSounds2").addEventListener("c
                 CreateCookie("ending2","true");
             }
             else {
-                CreateCookie("alert",false);
+                CreateCookie("alert","");
                 _endingSounds2 = false;
                 document.getElementById("endingSounds2").checked  = false;
                 CreateCookie("ending2","");
@@ -119,14 +124,15 @@ var endingSounds2 = document.getElementById("endingSounds2").addEventListener("c
 
 Setup();
 function Setup() {
+    console.log(endDate);
     timer = document.getElementById("timer");
     secondsTimer = document.getElementById("secondsTimer");
     document.getElementById("endingSounds").checked = GetCookie("ending");
     document.getElementById("endingSounds2").checked = GetCookie("ending2");
     document.getElementById("musicPlayerChoice").checked = GetCookie("music");
     document.getElementById("musicPlayerChoice2").checked = GetCookie("music2");
-    //_endingSounds = GetCookie("ending");
-    //_endingSounds2 = GetCookie("ending2");
+    _endingSounds = document.getElementById("endingSounds").checked = GetCookie("ending");
+    _endingSounds2 = document.getElementById("endingSounds2").checked = GetCookie("ending2");
     setTimeout(PlayMusic,1000);
     CalculateTime();
 }
@@ -201,7 +207,7 @@ function PlayEnd() {
     if (_endingSounds) {
         ending.src = "https://www.youtube.com/embed/wvD8NZN9Zsg?autoplay=1";
     } else if (_endingSounds2) {
-        //ending.src = "https://www.youtube.com/embed/wvD8NZN9Zsg?autoplay=1";
+        ending.src = "https://www.youtube.com/embed/videoseries?list=PL9kRoOntv7eBDClYoivs-RTkj3YWCO875&amp;autoplay=1";
         //TO BE ADDED
     }
     ending.frameBorder = "0";
