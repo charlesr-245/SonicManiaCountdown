@@ -1,5 +1,4 @@
 ﻿var endDate = new Date(Date.UTC(2017, 07, 15, 0, 0, 0, 0));
-//var endDate = new Date(2017, 06, 31, 15, 57, 45, 0);
 var _mili = 1;
 var _second = _mili*1000;
 var _minute = _second * 60;
@@ -24,18 +23,28 @@ var _endingSounds = false;
 var _endingSounds2 = false;
 var _alert = false;
 var musicPlayerChoice = document.getElementById("musicPlayerChoice").addEventListener("change",function() {
-    RemoveMusic(false);
     if (document.getElementById("musicPlayerChoice").checked) {
         document.getElementById("musicPlayerChoice2").checked = false;
+        CreateCookie("music","true");
+        CreateCookie("music2","");
         PlayMusic();
+    } else {
+        RemoveMusic(false);
+        CreateCookie("music","");
     }
 });
 
 var musicPlayerChoice2 = document.getElementById("musicPlayerChoice2").addEventListener("change",function() {
-    RemoveMusic(false);
+
     if (document.getElementById("musicPlayerChoice2").checked) {
         document.getElementById("musicPlayerChoice").checked = false;
+        CreateCookie("music2","true");
+        CreateCookie("music","");
         PlayMusic();
+    }
+    else {
+        RemoveMusic(false);
+        CreateCookie("music2","");
     }
 });
 
@@ -46,8 +55,11 @@ musicPlayer.id="musicPlayer";
 var endingSounds = document.getElementById("endingSounds").addEventListener("change", function() {
     if (document.getElementById("endingSounds").checked) {
         _endingSounds = true;
+        CreateCookie("ending","true");
+        CreateCookie("ending2","");
     } else {
         _endingSounds = false;
+        CreateCookie("ending","");
     }
 
     if (document.getElementById("endingSounds2").checked) {
@@ -55,25 +67,34 @@ var endingSounds = document.getElementById("endingSounds").addEventListener("cha
     }
 });
 
-var endingSounds = document.getElementById("endingSounds2").addEventListener("change", function() {
+var endingSounds2 = document.getElementById("endingSounds2").addEventListener("change", function() {
 
     if (document.getElementById("endingSounds2").checked) {
         _endingSounds2 = true;
-        if (!_alert) {
+        if (!GetCookie("alert")) {
             
             if (window.confirm("Are you sure? By confirming the animated cutscene that the Official Sonic Youtube Channel is uploading on August 14th will be played.")) {
-                _alert = true;
+                CreateCookie("alert",true);
+                CreateCookie("ending2","true");
             }
             else {
+                CreateCookie("alert",false);
+                _endingSounds2 = false;
                 document.getElementById("endingSounds2").checked  = false;
+                CreateCookie("ending2","");
             }
+        }
+        else {
+            CreateCookie("ending2","true");
         }
     } else {
         _endingSounds2 = false;
+        CreateCookie("ending2","");
     }
 
     if (document.getElementById("endingSounds").checked) {
         document.getElementById("endingSounds").checked = false;
+        CreateCookie("ending","");
     }
 
 });
@@ -81,7 +102,7 @@ var endingSounds = document.getElementById("endingSounds2").addEventListener("ch
 //YOUTUBE API IMPLEMENTATION
   // Load the IFrame Player API code asynchronously.
   var tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/player_api";
+  tag.src = "libs/player_api.js";
   var firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
@@ -100,9 +121,13 @@ Setup();
 function Setup() {
     timer = document.getElementById("timer");
     secondsTimer = document.getElementById("secondsTimer");
-    console.log(new Date().getUTCDate());
-    console.log(new Date().getTimezoneOffset());
-    console.log(endDate);
+    document.getElementById("endingSounds").checked = GetCookie("ending");
+    document.getElementById("endingSounds2").checked = GetCookie("ending2");
+    document.getElementById("musicPlayerChoice").checked = GetCookie("music");
+    document.getElementById("musicPlayerChoice2").checked = GetCookie("music2");
+    //_endingSounds = GetCookie("ending");
+    //_endingSounds2 = GetCookie("ending2");
+    setTimeout(PlayMusic,1000);
     CalculateTime();
 }
 
@@ -164,7 +189,6 @@ function MiliCount() {
     var __minutes = Math.floor((timeInterval % _hour) / _minute);
     var __seconds = Math.floor((timeInterval % _minute) / _second);
     var __milis = Math.floor((timeInterval % _second) / _mili);
-    //console.log(__milis+milis);
     if (milis + __milis >= 1000) {
         CalculateTime();
     } else {
@@ -187,19 +211,20 @@ function PlayEnd() {
 }
 
 function PlayMusic() {
+    RemoveMusic(false);
     if (days == 0 && hours == 0 && minutes <= 1 && seconds <= 31 && played && (_endingSounds || _endingSounds2)) {
         return;
     } 
     else {
         body.item(0).appendChild(musicPlayer);
         var randomIndex = Math.floor(Math.random()*16);
-        console.clear();
-        console.log(randomIndex);
         var playlist;
         if (document.getElementById("musicPlayerChoice").checked) {
             playlist = "PL6YtbPaCgKrSPGQcud92UaT2daUfYq1L_";
-        } else {
+        } else if (document.getElementById("musicPlayerChoice2").checked) {
             playlist = 'PL9kRoOntv7eDUBf_Fxu4JrHsozuBBP4wD';
+        } else {
+            return;
         }
         player = new YT.Player('musicPlayer', {
             height: '0',
@@ -210,8 +235,6 @@ function PlayMusic() {
                 autoplay: "1",
                 listType: 'playlist',
                 list: playlist,
-                disablekb: "1",
-                origin: "mania.charlez245.com",
                 index: randomIndex,
                 start: 1500,
             },
@@ -220,6 +243,25 @@ function PlayMusic() {
             }
         });
     }
+}
+
+function CreateCookie(name,value) {
+    document.cookie = name + " =" + value + "; path =/";
+}
+
+function GetCookie(name) {
+    name+="=";
+    var decode = decodeURIComponent(document.cookie).split(";");
+    for (var i = 0; i < decode.length; i++) {
+        var c = decode[i];
+        while (c.charAt(0) == " ") {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length,c.length);
+        }
+    }
+    return "";
 }
 
 
