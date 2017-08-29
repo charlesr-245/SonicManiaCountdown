@@ -1,4 +1,4 @@
-﻿var endDate = new Date(Date.UTC(2017, 07, 15, 0, 0, 0, 0));
+﻿
 
 var _mili = 1;
 var _second = _mili*1000;
@@ -23,35 +23,63 @@ var body = document.getElementsByClassName("body");
 var _endingSounds = false;
 var _endingSounds2 = false;
 var _alert = false;
+var endDate = new Date(Date.UTC(2017, 07, 30, 5, 0, 0, 0));
+var endDateCurrent= endDate;
 
-//var endDate = new Date().getTime() + 100000;
-
+/*
+var pcRelease = document.getElementById("pcRelease").addEventListener("change",function() {
+    if (document.getElementById("pcRelease").checked) {
+        CreateCookie("pc","true",30);
+    } else {
+        CreateCookie("pc","",30);
+    }
+});*/
 
 var musicPlayerChoice = document.getElementById("musicPlayerChoice").addEventListener("change",function() {
     if (document.getElementById("musicPlayerChoice").checked) {
+        document.getElementById("musicPlayerChoice3").checked = false;
         document.getElementById("musicPlayerChoice2").checked = false;
-        CreateCookie("music","true");
-        CreateCookie("music2","");
+        CreateCookie("music","true",30);
+        CreateCookie("music3","",30);
+        CreateCookie("music2","",30);
         PlayMusic();
     } else {
         RemoveMusic(false);
-        CreateCookie("music","");
+        CreateCookie("music","",30);
     }
 });
 
 var musicPlayerChoice2 = document.getElementById("musicPlayerChoice2").addEventListener("change",function() {
 
     if (document.getElementById("musicPlayerChoice2").checked) {
+        document.getElementById("musicPlayerChoice3").checked = false;
         document.getElementById("musicPlayerChoice").checked = false;
-        CreateCookie("music2","true");
-        CreateCookie("music","");
+        CreateCookie("music2","true",30);
+        CreateCookie("music3","",30);
+        CreateCookie("music","",30);
         PlayMusic();
     }
     else {
         RemoveMusic(false);
-        CreateCookie("music2","");
+        CreateCookie("music2","",30);
     }
 });
+
+var musicPlayerChoice2 = document.getElementById("musicPlayerChoice3").addEventListener("change",function() {
+    
+        if (document.getElementById("musicPlayerChoice3").checked) {
+            document.getElementById("musicPlayerChoice2").checked = false;
+            document.getElementById("musicPlayerChoice1").checked = false;
+            CreateCookie("music3","true",30);
+            CreateCookie("music2","",30);
+            CreateCookie("music","",30);
+            PlayMusic();
+        }
+        else {
+            RemoveMusic(false);
+            CreateCookie("music","",30);
+        }
+    });
 
 
 var musicPlayer = document.createElement("div");
@@ -60,11 +88,11 @@ musicPlayer.id="musicPlayer";
 var endingSounds = document.getElementById("endingSounds").addEventListener("change", function() {
     if (document.getElementById("endingSounds").checked) {
         _endingSounds = true;
-        CreateCookie("ending","true");
-        CreateCookie("ending2","");
+        CreateCookie("ending","true",30);
+        CreateCookie("ending2","",30);
     } else {
         _endingSounds = false;
-        CreateCookie("ending","");
+        CreateCookie("ending","",30);
     }
 
     if (document.getElementById("endingSounds2").checked) {
@@ -78,28 +106,28 @@ var endingSounds2 = document.getElementById("endingSounds2").addEventListener("c
         _endingSounds2 = true;
         if (!GetCookie("alert")) {
             
-            if (window.confirm("Are you sure? By confirming the animated cutscene that the Official Sonic Youtube Channel is uploading on August 14th will be played.")) {
-                CreateCookie("alert",true);
-                CreateCookie("ending2","true");
+            if (window.confirm("Are you sure? By confirming the animated cutscene that the Official Sonic Youtube Channel released on August 10th, 2017. AKA PRESS CANCEL OR BE SPOILED!!!")) {
+                CreateCookie("alert",true,30);
+                CreateCookie("ending2","true",30);
             }
             else {
-                CreateCookie("alert","");
+                CreateCookie("alert","",30);
                 _endingSounds2 = false;
                 document.getElementById("endingSounds2").checked  = false;
-                CreateCookie("ending2","");
+                CreateCookie("ending2","",30);
             }
         }
         else {
-            CreateCookie("ending2","true");
+            CreateCookie("ending2","true",30);
         }
     } else {
         _endingSounds2 = false;
-        CreateCookie("ending2","");
+        CreateCookie("ending2","",30);
     }
 
     if (document.getElementById("endingSounds").checked) {
         document.getElementById("endingSounds").checked = false;
-        CreateCookie("ending","");
+        CreateCookie("ending","",30);
     }
 
 });
@@ -131,20 +159,19 @@ function Setup() {
     document.getElementById("endingSounds2").checked = GetCookie("ending2");
     document.getElementById("musicPlayerChoice").checked = GetCookie("music");
     document.getElementById("musicPlayerChoice2").checked = GetCookie("music2");
+    document.getElementById("musicPlayerChoice2").checked = GetCookie("music3");
     _endingSounds = document.getElementById("endingSounds").checked = GetCookie("ending");
     _endingSounds2 = document.getElementById("endingSounds2").checked = GetCookie("ending2");
     setTimeout(PlayMusic,1000);
     CalculateTime();
 }
-
+endDateCurrent = endDate;
 function CalculateTime() {
     currentTime = new Date();
-    var timeLeft = endDate - currentTime;
+    var timeLeft = endDateCurrent - currentTime;
     if (timeLeft < 0) {
         timer.innerHTML = "Hey! What are you doing here?";
         secondsTimer.innerHTML = "Sonic Mania is out NOW!!!";
-
-        return;
     }
 
      days = Math.floor(timeLeft / _day);
@@ -207,7 +234,7 @@ function PlayEnd() {
     if (_endingSounds) {
         ending.src = "https://www.youtube.com/embed/wvD8NZN9Zsg?autoplay=1";
     } else if (_endingSounds2) {
-        ending.src = "https://www.youtube.com/embed/videoseries?list=PL9kRoOntv7eBDClYoivs-RTkj3YWCO875&amp;autoplay=1";
+        ending.src = "https://www.youtube.com/embed/zA9zwpMj_8A?autoplay=1";
         //TO BE ADDED
     }
     ending.frameBorder = "0";
@@ -218,7 +245,10 @@ function PlayEnd() {
 
 function PlayMusic() {
     RemoveMusic(false);
-    if (days == 0 && hours == 0 && minutes <= 1 && seconds <= 31 && played && (_endingSounds || _endingSounds2)) {
+    if (((days == 0 && hours == 0 && minutes <= 1 && seconds <= 31) && played && (_endingSounds || _endingSounds2)) && (days == 0 && hours == 0 && minutes <= 0 && seconds <= 0)) {
+        document.getElementById("musicPlayerChoice3").checked = false;
+        document.getElementById("musicPlayerChoice2").checked = false;
+        document.getElementById("musicPlayerChoice1").checked = false;
         return;
     } 
     else {
@@ -226,8 +256,11 @@ function PlayMusic() {
         var randomIndex = Math.floor(Math.random()*16);
         var playlist;
         if (document.getElementById("musicPlayerChoice").checked) {
-            playlist = "PL6YtbPaCgKrSPGQcud92UaT2daUfYq1L_";
+            playlist = "PL9kRoOntv7eBs1A2ewqWEQ7SXfUfRR3Uq";
         } else if (document.getElementById("musicPlayerChoice2").checked) {
+            playlist = 'PL9kRoOntv7eDUBf_Fxu4JrHsozuBBP4wD';
+        }
+        else if (document.getElementById("musicPlayerChoice3").checked) {
             playlist = 'PL9kRoOntv7eDUBf_Fxu4JrHsozuBBP4wD';
         } else {
             return;
@@ -251,8 +284,14 @@ function PlayMusic() {
     }
 }
 
-function CreateCookie(name,value) {
-    document.cookie = name + " =" + value + "; path =/";
+function CreateCookie(name,value,days) {
+    var expires="";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        expires = "; expires="+date.toUTCString();
+    }
+    document.cookie = name + " =" + value + expires+"; path =/";
 }
 
 function GetCookie(name) {
